@@ -7,7 +7,7 @@ import {
 import { REFRESH_TOKEN_COOKIE_KEY } from '../auth.constants';
 
 export const RefreshToken = createParamDecorator(
-  (ctx: ExecutionContext): string => {
+  (_data: unknown, ctx: ExecutionContext): string => {
     const request = ctx.switchToHttp().getRequest<Request>();
     const refreshToken = request.cookies[REFRESH_TOKEN_COOKIE_KEY];
     if (!refreshToken) {

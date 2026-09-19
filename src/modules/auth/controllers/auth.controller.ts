@@ -4,7 +4,7 @@ import { RegisterRequestDto, RegisterResponseDto } from '../dto/register.dto';
 import { RefreshResponseDto } from '../dto/refresh.dto';
 import { AuthService } from '../services/auth.service';
 import { Public } from '../decorators/public.decorator';
-import { SessionMetadataDto } from '../interfaces/session-service.interface';
+import type { SessionMetadataDto } from '../interfaces/session-service.interface';
 import { Metadata } from '../decorators/metadata.decorator';
 import { RefreshToken } from '../decorators/refresh-token.decorator';
 import { SetRefreshTokenInterceptor } from '../interceptors/set-refresh-token.interceptor';

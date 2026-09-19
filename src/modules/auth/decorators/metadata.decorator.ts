@@ -18,7 +18,7 @@ const getUserAgent = (request: Request) => {
 };
 
 export const Metadata = createParamDecorator(
-  (ctx: ExecutionContext): SessionMetadataDto => {
+  (_data: unknown, ctx: ExecutionContext): SessionMetadataDto => {
     const request = ctx.switchToHttp().getRequest<Request>();
     const ip = getIp(request);
     const userAgent = getUserAgent(request);
