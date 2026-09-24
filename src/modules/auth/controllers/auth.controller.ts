@@ -1,4 +1,11 @@
-import { Body, Controller, Post, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseInterceptors,
+} from '@nestjs/common';
 import { LoginRequestDto, LoginResponseDto } from '../dto/login.dto';
 import { RegisterRequestDto, RegisterResponseDto } from '../dto/register.dto';
 import { RefreshResponseDto } from '../dto/refresh.dto';
@@ -17,6 +24,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
+  @HttpCode(HttpStatus.OK)
   async login(
     @Body() dto: LoginRequestDto,
     @Metadata() metadata: SessionMetadataDto,
@@ -37,10 +45,12 @@ export class AuthController {
     @Metadata() metadata: SessionMetadataDto,
     @RefreshToken() refreshToken: string,
   ): Promise<RefreshResponseDto> {
+    console.log(refreshToken);
     return this.authService.refresh(refreshToken, metadata);
   }
 
   @Post('logout')
+  @HttpCode(HttpStatus.OK)
   async logout(
     @RefreshToken() refreshToken: string,
   ): Promise<LogoutResponseDto> {
