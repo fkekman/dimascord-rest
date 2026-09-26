@@ -7,6 +7,6 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
   @Get('me')
   async getMe(@User() user: any) {
-    return this.userService.getCurrentUser(user.sub);
+    return this.userService.getUserById(user.sub);
   }
 }

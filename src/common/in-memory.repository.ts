@@ -8,7 +8,7 @@ export interface DefaultEntry {
 
 @Injectable()
 export class InMemoryRepository<T extends DefaultEntry> {
-  private entries: T[] = [];
+  protected entries: T[] = [];
 
   async find(params: Partial<T>): Promise<T[]> {
     const keys = Object.keys(params) as (keyof T)[];

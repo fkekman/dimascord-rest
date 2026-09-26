@@ -21,7 +21,7 @@ export class UserService {
     return this.userRepository.create(dto);
   }
 
-  async getCurrentUser(userId: string) {
+  async getUserById(userId: string) {
     const foundUser = await this.findUserById(userId);
     if (!foundUser) {
       throw new NotFoundException('User not found');
