@@ -15,7 +15,7 @@ const parseSetCookies = (headers: Record<string, string | undefined>) => {
   );
 };
 
-describe('Some kek', () => {
+describe('Auth module', () => {
   let app: INestApplication;
 
   const creds = {

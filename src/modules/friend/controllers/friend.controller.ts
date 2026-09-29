@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { User } from '../../auth/decorators/user.decorator';
 import { FriendService } from '../services/friend.service';
 import { SendFriendshipRequestDto } from '../dto/send-friendship.request.dto';
@@ -10,38 +17,63 @@ export class FriendsController {
   constructor(private readonly friendService: FriendService) {}
 
   @Get('')
+  @HttpCode(HttpStatus.OK)
   async getUserFriends(@User() user: any) {
     const userId = user.sub;
     return this.friendService.getUserFriends(userId);
   }
 
-  @Post('request')
-  async sendFriendshipRequest(
+  @Post('send')
+  @HttpCode(HttpStatus.OK)
+  async sendFriendship(
     @User() user: any,
     @Body() dto: SendFriendshipRequestDto,
   ) {
     const userId = user.sub;
     const { friendId } = dto;
-    return this.friendService.sendFriendshipRequest(userId, friendId);
+    return this.friendService.sendFriendship(userId, friendId);
   }
 
   @Post('accept')
-  async acceptFriendshipRequest(
+  @HttpCode(HttpStatus.OK)
+  async acceptFriendship(
     @User() user: any,
     @Body() dto: AcceptFriendshipRequestDto,
   ) {
     const userId = user.sub;
     const { requestId } = dto;
-    return this.friendService.acceptFrindshipRequest(userId, requestId);
+    return this.friendService.acceptFrindship(userId, requestId);
   }
 
   @Post('deny')
-  async denyFriendshipRequest(
+  @HttpCode(HttpStatus.OK)
+  async denyFriendship(
     @User() user: any,
     @Body() dto: DenyFriendshipRequestDto,
   ) {
     const userId = user.sub;
     const { requestId } = dto;
-    return this.friendService.denyFriendshipRequest(userId, requestId);
+    return this.friendService.denyFriendship(userId, requestId);
+  }
+
+  // @Post('unfriend')
+  // @HttpCode(HttpStatus.OK)
+  // async unfriend(
+  // @User() user: any,
+  // @Body() dto: UnfriendRequestDto
+  // ) { }
+
+  @Get('incoming')
+  @HttpCode(HttpStatus.OK)
+  async getIncomingFriendships(@User() user: any) {
+    const userId = user.sub;
+    return this.friendService.getIncomingFriendships(userId);
+  }
+
+  @Get('outgoing')
+  @HttpCode(HttpStatus.OK)
+  async getOutgoingFriendships(@User() user: any) {
+    const userId = user.sub;
+    return this.friendService.getOutgoingFriendships(userId);
   }
 }

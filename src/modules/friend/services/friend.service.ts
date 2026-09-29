@@ -9,7 +9,10 @@ import { FriendRepository } from '../repositories/friend.repository';
 export class FriendService {
   constructor(private readonly friendRepository: FriendRepository) {}
 
-  async sendFriendshipRequest(userId: string, friendUserId: string) {
+  async sendFriendship(userId: string, friendUserId: string) {
+    if (userId === friendUserId) {
+      throw new ConflictException();
+    }
     const isFriends = await this.friendRepository.isFriends(
       userId,
       friendUserId,
@@ -22,12 +25,12 @@ export class FriendService {
       friendUserId,
     );
     if (incomingRequest) {
-      throw new ConflictException('Request not found');
+      throw new NotFoundException('Request not found');
     }
     await this.friendRepository.createPendingRequest(userId, friendUserId);
   }
 
-  async acceptFrindshipRequest(userId: string, requestId: string) {
+  async acceptFrindship(userId: string, requestId: string) {
     const incomingRequest = await this.friendRepository.findById(requestId);
     if (!incomingRequest) {
       throw new NotFoundException('Request not found');
@@ -38,18 +41,36 @@ export class FriendService {
     await this.friendRepository.acceptPendingRequest(incomingRequest.id);
   }
 
-  async denyFriendshipRequest(userId: string, requestId: string) {
+  async denyFriendship(userId: string, requestId: string) {
     const incomingRequest = await this.friendRepository.findById(requestId);
     if (!incomingRequest) {
       throw new NotFoundException('Request not found');
     }
-    if (incomingRequest.friendId !== userId) {
+    if (
+      incomingRequest.friendId !== userId ||
+      incomingRequest.status !== 'pending'
+    ) {
       throw new ConflictException('Cant deny this request');
     }
-    await this.friendRepository.denyPendingRequest(incomingRequest.id);
+    await this.friendRepository.deleteById(incomingRequest.id);
+  }
+
+  async unfriend(userId: string, friendId: string) {
+    const isFriends = await this.friendRepository.isFriends(userId, friendId);
+    if (!isFriends) return;
+
+    await this.friendRepository.deleteByUserFriend(userId, friendId);
   }
 
   async getUserFriends(userId: string) {
     return this.friendRepository.findUserFriends(userId);
+  }
+
+  async getIncomingFriendships(userId: string) {
+    return this.friendRepository.findIncomingRequests(userId);
+  }
+
+  async getOutgoingFriendships(userId: string) {
+    return this.friendRepository.findOutgoingRequests(userId);
   }
 }

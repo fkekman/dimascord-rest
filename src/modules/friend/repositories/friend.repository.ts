@@ -40,14 +40,27 @@ export class FriendRepository extends InMemoryRepository<FriendEntry> {
       status: 'accepted',
     });
   }
-  async denyPendingRequest(requestId: string) {
+  async deleteById(id: string) {
     const foundEntry = await this.findOne({
-      id: requestId,
+      id,
     });
     if (!foundEntry) {
       throw new Error('Request not found');
     }
-    await this.delete(requestId);
+    await this.delete(id);
+  }
+
+  async deleteByUserFriend(userId: string, friendId: string) {
+    const foundEntry = this.entries.find((entry) => {
+      return (
+        (entry.userId === userId && entry.friendId === friendId) ||
+        (entry.userId === friendId && entry.friendId === userId)
+      );
+    });
+    if (!foundEntry) {
+      throw new Error('Request not found');
+    }
+    await this.delete(foundEntry.id);
   }
 
   async findById(id: string) {
@@ -62,7 +75,7 @@ export class FriendRepository extends InMemoryRepository<FriendEntry> {
     });
   }
 
-  async findPendingRequests(userId: string) {
+  async findOutgoingRequests(userId: string) {
     return this.find({ userId, status: 'pending' });
   }
 
