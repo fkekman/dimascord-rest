@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { AppModule } from '../src/modules/app.module';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 
 const parseSetCookies = (headers: Record<string, string | undefined>) => {
@@ -15,12 +15,12 @@ const parseSetCookies = (headers: Record<string, string | undefined>) => {
   );
 };
 
-describe('Some kek', () => {
+describe('Auth module', () => {
   let app: INestApplication;
 
   const creds = {
     email: 'test@test.tt',
-    password: 'somepass',
+    password: 'S0meP@assssd',
   };
 
   const accessCheck = (accessToken: string) => request(app.getHttpServer())
@@ -36,6 +36,13 @@ describe('Some kek', () => {
 
     app = moduleRef.createNestApplication();
     app.use(cookieParser());
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+      }),
+    );
     await app.init()
   });
 
@@ -75,10 +82,7 @@ describe('Some kek', () => {
   it('login->refresh', async () => {
     let response = await request(app.getHttpServer())
       .post('/auth/login')
-      .send({
-        email: 'test@test.tt',
-        password: 'somepass',
-      });
+      .send(creds);
     let accessToken = response.body.accessToken as string;
     const refreshToken = parseSetCookies(response.headers)['refreshToken'];
 
@@ -96,10 +100,7 @@ describe('Some kek', () => {
   it('login->logout->refresh', async () => {
     let response = await request(app.getHttpServer())
       .post('/auth/login')
-      .send({
-        email: 'test@test.tt',
-        password: 'somepass',
-      })
+      .send(creds)
       .expect(200);
     let accessToken = response.body.accessToken as string;
     const refreshToken = parseSetCookies(response.headers)['refreshToken'];

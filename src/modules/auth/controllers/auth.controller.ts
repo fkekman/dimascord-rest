@@ -45,7 +45,6 @@ export class AuthController {
     @Metadata() metadata: SessionMetadataDto,
     @RefreshToken() refreshToken: string,
   ): Promise<RefreshResponseDto> {
-    console.log(refreshToken);
     return this.authService.refresh(refreshToken, metadata);
   }
 
