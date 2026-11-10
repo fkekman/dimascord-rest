@@ -26,5 +26,4 @@ Dimascord REST API на NestJS и TypeScript.
 
 ## Отложенные задачи
 
-- [Автоматическое исправление замечаний после ревью PR](docs/tasks/001-automate-pr-review-fixes.md).
 - [Логирование, хранилище и просмотр логов](docs/tasks/002-configure-logging.md).
