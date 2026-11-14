@@ -1,0 +1,13 @@
+services:
+  app:
+    build:
+      target: development
+    command: ['npm', 'run', 'start:dev']
+    volumes:
+      - ./src:/app/src
+      - ./tsconfig.json:/app/tsconfig.json:ro
+      - ./tsconfig.build.json:/app/tsconfig.build.json:ro
+      - ./nest-cli.json:/app/nest-cli.json:ro
+      - app-node-modules:/app/node_modules
+volumes:
+  app-node-modules:

@@ -3,6 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
+import { DataSource } from 'typeorm';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
@@ -17,6 +18,7 @@ describe('AppController (e2e)', () => {
   });
 
   it('/ (GET)', () => {
+    expect(app.get(DataSource).isInitialized).toBe(true);
     return request(app.getHttpServer())
       .get('/')
       .expect(200)
@@ -24,6 +26,10 @@ describe('AppController (e2e)', () => {
   });
 
   afterEach(async () => {
-    await app.close();
+    if (app) {
+      const source = app.get(DataSource);
+      await app.close();
+      expect(source.isInitialized).toBe(false);
+    }
   });
 });

@@ -1,0 +1,5 @@
+.agents/
+.codex/
+dist/
+coverage/
+node_modules/
